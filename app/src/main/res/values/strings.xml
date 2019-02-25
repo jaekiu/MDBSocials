@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MDBSocials</string>
+    <string name="feed_title">Your Feed</string>
+    <string name="social_title">Create a Social</string>
+    <string name="create_social">Create a Social</string>
+    <string name="sign_out">Sign Out</string>
+</resources>
