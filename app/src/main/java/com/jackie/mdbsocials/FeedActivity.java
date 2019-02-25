@@ -110,6 +110,9 @@ public class FeedActivity extends AppCompatActivity {
                     newSocials.add(s);
                     Log.d("nani", "event name: " + name);
                 }
+                // Need to reverse the list because Firebase doesn't have a descending ordering function.
+                // https://stackoverflow.com/questions/34156996/firebase-data-desc-sorting-in-android
+                Collections.reverse(newSocials);
                 _socials.clear();
                 _socials.addAll(newSocials);
                 adapter.notifyDataSetChanged();

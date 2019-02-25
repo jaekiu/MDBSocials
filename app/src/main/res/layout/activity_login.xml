@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient"
-    tools:context=".LoginActivity">
+    tools:context=".LoginActivity"
+    android:focusable="true" android:focusableInTouchMode="true">
 
 
     <ImageView
@@ -52,7 +53,6 @@
         android:backgroundTint="@android:color/white"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:textColor="@color/common_google_signin_btn_text_dark_pressed"
         app:layout_constraintBottom_toTopOf="@+id/pwImageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/mailImageView"
