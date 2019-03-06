@@ -40,19 +40,26 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jackie.mdbsocials.FirebaseUtils.getFirebaseStorage;
+import static com.jackie.mdbsocials.FirebaseUtils.getFirebaseUser;
+import static com.jackie.mdbsocials.FirebaseUtils.getSocialsDatabaseRef;
+
 public class DetailActivity extends AppCompatActivity {
 
+    /** Layout-related variables. */
     private ImageView _img;
     private TextView _nameText;
     private TextView _dateText;
     private TextView _descText;
     private TextView _numInterested;
     private TextView _organizer;
-//    private Switch _interestedSwitch;
     private Button _interestedBtn;
+
+    /** Firebase-related variables. */
     private DatabaseReference _mDatabase;
     private FirebaseUser _user;
 
+    /** Sets up activity. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,14 +78,9 @@ public class DetailActivity extends AppCompatActivity {
         _descText = findViewById(R.id.descText_detail);
         _numInterested = findViewById(R.id.interested_detail);
         _organizer = findViewById(R.id.organizer_detail);
-//        _interestedSwitch = findViewById(R.id.interested_switch);
         _interestedBtn = findViewById(R.id.interested_button);
-        _mDatabase = FirebaseDatabase.getInstance().getReference("socials");
-        _user = FirebaseAuth.getInstance().getCurrentUser();
-
-        // Saves state of Switch Toggle button.
-//        SharedPreferences sharedPrefs = getSharedPreferences("com.jackie.mdbsocials", MODE_PRIVATE);
-//        _interestedSwitch.setChecked(sharedPrefs.getBoolean("Interested State", false));
+        _mDatabase = getSocialsDatabaseRef();
+        _user = getFirebaseUser();
 
         // Retrieving extra.
         final Social s = (Social) getIntent().getSerializableExtra("Social");
@@ -88,11 +90,10 @@ public class DetailActivity extends AppCompatActivity {
         _descText.setText(s.getDescription());
         _numInterested.setText(s.getInterested() + " interested");
         _organizer.setText(s.getEmail());
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        FirebaseStorage storage = getFirebaseStorage();
         StorageReference storageRef = storage.getReference();
         StorageReference imgRef = storageRef.child(s.getUID() + ".jpg");
         Glide.with(this).load(imgRef).into(_img);
-
 
         ValueEventListener postListener = new ValueEventListener() {
             @Override
@@ -101,6 +102,7 @@ public class DetailActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     interestedUsers.add(snapshot.getValue(String.class));
                 }
+
                 if (interestedUsers.contains(_user.getEmail())) {
                     _interestedBtn.setText(Html.fromHtml("✓") + " Interested");
                     _interestedBtn.setTextColor(Color.parseColor("#4cbb17"));
@@ -151,50 +153,6 @@ public class DetailActivity extends AppCompatActivity {
                         _numInterested.setText(s.getInterested() + " interested");
                     }
                 });
-//                _interestedSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                    public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-//                        if (isChecked) {
-//                            s.incrementInterested();
-//                            SharedPreferences.Editor editor = getSharedPreferences("com.jackie.mdbsocials", MODE_PRIVATE).edit();
-//                            editor.putBoolean("Interested State", true);
-//                            editor.commit();
-//                            _mDatabase.runTransaction(new Transaction.Handler() {
-//                                @NonNull
-//                                @Override
-//                                public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-//                                    mutableData.setValue(s.getInterested());
-//                                    return Transaction.success(mutableData);
-//                                }
-//
-//                                @Override
-//                                public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-//                                    Log.d("Database", "postTransaction:onComplete:" + databaseError);
-//                                }
-//                            });
-//                        } else {
-//                            s.decrementInterested();
-//                            SharedPreferences.Editor editor = getSharedPreferences("com.jackie.mdbsocials", MODE_PRIVATE).edit();
-//                            editor.putBoolean("Interested State", false);
-//                            editor.commit();
-//                            _mDatabase.runTransaction(new Transaction.Handler() {
-//                                @NonNull
-//                                @Override
-//                                public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
-//                                    mutableData.setValue(s.getInterested());
-//                                    return Transaction.success(mutableData);
-//                                }
-//
-//                                @Override
-//                                public void onComplete(@Nullable DatabaseError databaseError, boolean b, @Nullable DataSnapshot dataSnapshot) {
-//                                    Log.d("Database", "postTransaction:onComplete:" + databaseError);
-//                                }
-//                            });
-//                        }
-//
-//                        _numInterested.setText(s.getInterested() + " interested");
-//
-//                    }
-//                });
             }
 
             @Override

@@ -23,16 +23,20 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+import static com.jackie.mdbsocials.FirebaseUtils.getFirebaseAuth;
 
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+    /** Firebase-related variables. */
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    /** Layout-related variables. */
     private Button signUpBtn;
     private EditText email;
     private EditText password;
     private Button login;
-    private FirebaseAuth.AuthStateListener mAuthListener;
 
-
+    /** Sets up activity. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // Prevents keyboard from popping up when activity launches.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        mAuth = FirebaseAuth.getInstance();
+        mAuth = getFirebaseAuth();
         signUpBtn = findViewById(R.id.signUpBtn);
         email = findViewById(R.id.emailEditText);
         password = findViewById(R.id.pwEditText);
@@ -60,7 +64,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         };
         mAuth.addAuthStateListener(mAuthListener);
-
         signUpBtn.setOnClickListener(this);
         login.setOnClickListener(this);
 
@@ -70,12 +73,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-
     }
 
+    /** Attempts to login the user.
+     * @param email: Represents the user's email that he/she inputs.
+     * @param password: Represents the user's password that he/she inputs. */
     public void loginUsers(String email, String password) {
-        Log.d("nani", "status: i'm in");
-
         if (email == null || password == null) {
             Toast.makeText(this, "Please enter your email and password!", Toast.LENGTH_LONG).show();
         } else if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
@@ -103,6 +106,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+    /** Switches to FeedActivity.class. */
     public void updateUI() {
         Intent i = new Intent(this, FeedActivity.class);
         startActivity(i);
@@ -116,13 +120,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /** Handles all the clicks. */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            // Navigates to the sign-up page.
             case R.id.signUpBtn:
                 Intent i = new Intent(LoginActivity.this, SignUpActivity.class);
                 startActivity(i);
                 break;
+            // Attempts to login the user.
             case R.id.loginBtn:
                 loginUsers(email.getText().toString(), password.getText().toString());
                 break;

@@ -33,14 +33,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static com.jackie.mdbsocials.FirebaseUtils.getFirebaseUser;
+import static com.jackie.mdbsocials.FirebaseUtils.getSocialsDatabaseRef;
+
 public class FeedActivity extends AppCompatActivity {
+    /** Represents the RecyclerView. */
     private RecyclerView _socialsView;
+
+    /** Represents all the socials. */
     private ArrayList _socials;
+
+    /** Firebase-related variables.*/
     private DatabaseReference _mDatabase;
-    private DrawerLayout _drawerLayout;
     private FirebaseUser _user;
+
+    /** Toolbar-related variables. */
+    private DrawerLayout _drawerLayout;
     private TextView _navText;
 
+    /** Sets up activity. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,35 +64,7 @@ public class FeedActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        // set item as selected to persist highlight
-                        menuItem.setChecked(true);
-                        // close drawer when item is tapped
-                        _drawerLayout.closeDrawers();
-
-                        // Add code here to update the UI based on the item selected
-                        // For example, swap UI fragments here
-                        switch (menuItem.getItemId()) {
-                            case R.id.nav_create:
-                                Intent i1 = new Intent(FeedActivity.this, SocialActivity.class);
-                                startActivity(i1);
-                                break;
-                            case R.id.nav_sign_out:
-                                Intent i2 = new Intent(FeedActivity.this, LoginActivity.class);
-                                FirebaseAuth.getInstance().signOut();
-                                Toast.makeText(FeedActivity.this, "You are now signed out.", Toast.LENGTH_SHORT).show();
-                                startActivity(i2);
-                                break;
-                        }
-
-                        return true;
-                    }
-                });
-
+        setUpDrawer();
 
         // Initialization of items.
         _socials = new ArrayList<>();
@@ -90,7 +73,7 @@ public class FeedActivity extends AppCompatActivity {
         _socialsView.setLayoutManager(layoutManager);
         final FeedAdapter adapter = new FeedAdapter(this, _socials);
         _socialsView.setAdapter(adapter);
-        _mDatabase = FirebaseDatabase.getInstance().getReference("socials");
+        _mDatabase = getSocialsDatabaseRef();
 
         // Realtime database retrieval.
         ValueEventListener postListener = new ValueEventListener() {
@@ -128,6 +111,7 @@ public class FeedActivity extends AppCompatActivity {
 
     }
 
+    /** Creates all the menu options for the Drawer. */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -135,6 +119,7 @@ public class FeedActivity extends AppCompatActivity {
         return true;
     }
 
+    /** Handles selection of options for the Drawer. */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -144,12 +129,49 @@ public class FeedActivity extends AppCompatActivity {
                 return true;
             case android.R.id.home:
                 _drawerLayout.openDrawer(GravityCompat.START);
-                _user = FirebaseAuth.getInstance().getCurrentUser();
+                _user = getFirebaseUser();
                 _navText = findViewById(R.id.nav_welcome);
                 _navText.setText("Hi " + _user.getDisplayName() + "!");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /** Sets up the Drawer for the navigation bar. */
+    void setUpDrawer() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        _drawerLayout.closeDrawers();
+
+                        // Add code here to update the UI based on the item selected
+                        // For example, swap UI fragments here
+                        switch (menuItem.getItemId()) {
+                            case R.id.nav_create:
+                                Intent i1 = new Intent(FeedActivity.this, SocialActivity.class);
+                                startActivity(i1);
+                                break;
+                            case R.id.nav_analytics:
+                                Intent i3 = new Intent(FeedActivity.this, AnalyticsActivity.class);
+                                startActivity(i3);
+                                break;
+                            case R.id.nav_sign_out:
+                                Intent i2 = new Intent(FeedActivity.this, LoginActivity.class);
+                                FirebaseAuth.getInstance().signOut();
+                                Toast.makeText(FeedActivity.this, "You are now signed out.", Toast.LENGTH_SHORT).show();
+                                startActivity(i2);
+                                break;
+                        }
+
+                        return true;
+                    }
+                });
+
     }
 }

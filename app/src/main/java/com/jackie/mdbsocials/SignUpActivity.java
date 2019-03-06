@@ -27,13 +27,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+import static com.jackie.mdbsocials.FirebaseUtils.getFirebaseAuth;
+
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
-    private ImageView lady;
+    /** Represents Firebase Auth object. */
     private FirebaseAuth mAuth;
+
+    /** Layout-related variables. */
+    private ImageView lady;
     private Button signUpBtn;
     private EditText email;
     private EditText password;
     private EditText name;
+
+    /** Sets up activity. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,21 +49,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         // Prevents keyboard from popping up when activity launches.
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
-        mAuth = FirebaseAuth.getInstance();
-
+        // Initializes variables.
+        mAuth = getFirebaseAuth();
         lady = findViewById(R.id.lady);
         Glide.with(this).load(R.drawable.img_3).centerInside().into(lady);
-
         signUpBtn = findViewById(R.id.signUpBtn_2);
         email = findViewById(R.id.emailEditText);
         password = findViewById(R.id.pwEditText);
         name = findViewById(R.id.nameEditText);
 
         signUpBtn.setOnClickListener(this);
-
-
     }
 
+    /** Attempts to sign up a new user.
+     * @param email: represents user's email that he/she inputs.
+     * @param name: represents user's name that he/she inputs.
+     * @param password: represents user's password that he/she inputs. */
     public void signUpUsers(String email, String password, final String name) {
         if (email == null || password == null || name == null) {
             Toast.makeText(this, "Please enter your name, email, and password!", Toast.LENGTH_LONG).show();
@@ -101,11 +109,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    /** Switches to FeedActivity.class if sign-up is successful. */
     public void updateUI() {
         Intent i = new Intent(this, FeedActivity.class);
         startActivity(i);
     }
 
+    /** Handles all the clicks.*/
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

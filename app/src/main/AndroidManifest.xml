@@ -23,13 +23,21 @@
 
         <activity android:name=".SignUpActivity" />
         <activity android:name=".FeedActivity" />
-        <activity android:name=".SocialActivity"
+        <activity
+            android:name=".SocialActivity"
             android:parentActivityName=".FeedActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeedActivity" />
         </activity>
-        <activity android:name=".DetailActivity"
+        <activity
+            android:name=".DetailActivity"
+            android:parentActivityName=".FeedActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeedActivity" />
+        </activity>
+        <activity android:name=".AnalyticsActivity"
             android:parentActivityName=".FeedActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

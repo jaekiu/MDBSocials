@@ -6,6 +6,10 @@
             android:icon="@drawable/ic_add_black"
             android:title="@string/create_social" />
         <item
+            android:id="@+id/nav_analytics"
+            android:icon="@drawable/ic_analytics"
+            android:title="Analytics" />
+        <item
             android:id="@+id/nav_sign_out"
             android:icon="@drawable/ic_exit"
             android:title="@string/sign_out" />

@@ -6,19 +6,15 @@
 package com.jackie.mdbsocials;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -41,13 +37,17 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.jackie.mdbsocials.FirebaseUtils.getFirebaseDatabase;
+import static com.jackie.mdbsocials.FirebaseUtils.getFirebaseStorage;
+import static com.jackie.mdbsocials.FirebaseUtils.getFirebaseUser;
+import static com.jackie.mdbsocials.FirebaseUtils.getSocialsDatabaseRef;
+
 public class SocialActivity extends AppCompatActivity implements View.OnClickListener {
 
+    /** Layout-related variables. */
     private ImageButton _imgBtn;
     private EditText _nameText;
     private EditText _dateText;
@@ -56,13 +56,13 @@ public class SocialActivity extends AppCompatActivity implements View.OnClickLis
     private Button _createBtn;
     private Uri _eventImg;
 
-    // Firebase variable
+    /** Firebase-related variables. */
     private FirebaseStorage _storage;
     private FirebaseDatabase _database;
     private DatabaseReference _myRef;
     private FirebaseUser _user;
 
-
+    /** Sets up activity. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,15 +84,16 @@ public class SocialActivity extends AppCompatActivity implements View.OnClickLis
         _descText = findViewById(R.id.descText);
         _upload = findViewById(R.id.uploadText);
         _createBtn = findViewById(R.id.createBtn);
-        _storage = FirebaseStorage.getInstance();
-        _database = FirebaseDatabase.getInstance();
-        _myRef = _database.getReference("socials");
-        _user = FirebaseAuth.getInstance().getCurrentUser();
+        _storage = getFirebaseStorage();
+        _database = getFirebaseDatabase();
+        _myRef = getSocialsDatabaseRef();
+        _user = getFirebaseUser();
         _imgBtn.setOnClickListener(this);
         _createBtn.setOnClickListener(this);
 
     }
 
+    /** Handles image uploading. */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -102,7 +103,6 @@ public class SocialActivity extends AppCompatActivity implements View.OnClickLis
             Bitmap bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), _eventImg);
-                //_imgBtn.setImageBitmap(bitmap);
                 Glide.with(this).load(bitmap).centerCrop().into(_imgBtn);
                 _imgBtn.setBackgroundTintList((getResources().getColorStateList(android.R.color.transparent)));
                 _upload.setTextColor(getResources().getColor(android.R.color.transparent));
@@ -117,6 +117,7 @@ public class SocialActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    /** Handles all the clicks in this activity. */
     @Override
     public void onClick(View v) {
         switch (v.getId()){

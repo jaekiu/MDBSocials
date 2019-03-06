@@ -21,36 +21,45 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.SocialViewHolder> {
+    /** Context from FeedActivity.class. */
     private Context _context;
+
+    /** All of the socials. */
     private ArrayList<Social> _socials;
 
+    /** Constructor that initializes variables. */
     public FeedAdapter(Context context, ArrayList<Social> socials) {
         _context = context;
         _socials = socials;
     }
 
+    /** Creates and inflates the View Holder. */
     @Override
     public SocialViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(_context).inflate(R.layout.social_row, viewGroup, false);
         return new SocialViewHolder(v);
     }
 
+    /** Binds the data from a Social onto the layout items. */
     @Override
     public void onBindViewHolder(SocialViewHolder socialViewHolder, int i) {
         socialViewHolder.bind(i);
     }
 
+    /** Returns number of socials. */
     @Override
     public int getItemCount() {
         return _socials.size();
     }
 
+    /** Represents the View Holder for Socials in FeedActivity.class. */
     class SocialViewHolder extends RecyclerView.ViewHolder {
         private ImageView _eventImg;
         private TextView _eventName;
         private TextView _organizer;
         private TextView _interested;
 
+        /** Constructs a View Holder for socials. */
         public SocialViewHolder(@NonNull View itemView) {
             super(itemView);
             _eventImg = itemView.findViewById(R.id.eventImg);
@@ -58,6 +67,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.SocialViewHold
             _organizer = itemView.findViewById(R.id.organizerText);
             _interested = itemView.findViewById(R.id.interestedText);
 
+            // Navigates to DetailActivity.
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -72,6 +82,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.SocialViewHold
 
         }
 
+        /** Binds Social data to layout variables. */
         void bind(int position) {
             Social currSocial = _socials.get(position);
             String eventName = currSocial.getEventName();
