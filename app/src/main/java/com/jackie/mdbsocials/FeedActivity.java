@@ -111,7 +111,7 @@ public class FeedActivity extends AppCompatActivity {
 
     }
 
-    /** Creates all the menu options for the Drawer. */
+    /** Creates all the menu options for the toolbar (the add button). */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
